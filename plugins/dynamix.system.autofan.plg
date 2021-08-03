@@ -99,7 +99,7 @@ fi
   <!-- SOURCE PACKAGE -->
   <FILE Name="&source;.txz" Run="upgradepkg --install-new --reinstall">
     <URL>https://raw.githubusercontent.com/BasVanBoven/Unraid-Templates/master/plugins/dynamix.system.autofan.txz</URL>
-    <MD5>&MD5;</MD5>
+    <!--<MD5>&MD5;</MD5>-->
   </FILE>
   <!-- WORKAROUND -->
   <FILE Name="/tmp/start_service" Mode="0770">
