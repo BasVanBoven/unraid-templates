@@ -98,7 +98,7 @@ fi
   </FILE>
   <!-- SOURCE PACKAGE -->
   <FILE Name="&source;.txz" Run="upgradepkg --install-new --reinstall">
-    <URL>https://raw.githubusercontent.com/BasVanBoven/unraid-templates/main/plugins/&name;.txz</URL>
+    <URL>https://github.com/BasVanBoven/unraid-templates/blob/main/plugins/dynamix.system.autofan.txz?raw=true</URL>
     <MD5>&MD5;</MD5>
   </FILE>
   <!-- WORKAROUND -->
