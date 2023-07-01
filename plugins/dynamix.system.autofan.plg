@@ -1,19 +1,29 @@
-<?xml version="1.0" standalone="yes"?>
+<?xml version='1.0' standalone='yes'?>
+
 <!DOCTYPE PLUGIN [
-<!ENTITY name "dynamix.system.autofan">
-<!ENTITY author "BasVanBoven/Bergware/gfjardim">
-<!ENTITY version "2021.08.03">
-<!ENTITY launch "Settings/FanSettings">
+<!ENTITY name      "dynamix.system.autofan">
+<!ENTITY author    "BvB/Bergware/gfjardim">
+<!ENTITY version   "2023.02.05a-BvB">
+<!ENTITY launch    "Settings/FanSettings">
 <!ENTITY pluginURL "https://raw.githubusercontent.com/BasVanBoven/unraid-templates/main/plugins/&name;.plg">
-<!ENTITY source "/boot/config/plugins/&name;/&name;">
-<!ENTITY MD5 "84237BDC4A1D01F4E4751DD5E237FD88">
+<!ENTITY source    "/boot/config/plugins/&name;/&name;">
+<!ENTITY MD5       "02dea38ef8d4f7819f758f78b5ef32cf">
 ]>
-<PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.1.9" support="http://lime-technology.com/forum/index.php?topic=36543.0">
-  <CHANGES>
+
+<PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.9.0">
+
+<CHANGES>
 ##&name;
 
 ###&version;
 - custom fork of plugin to allow for CPU-temperature controlled fan speeds
+
+- set minimum Unraid version to 6.9 (supports multi-language)
+- added support for upcoming Unraid version 6.12
+
+###2022.09.16
+- added SAS disks support (courtesy of user Doron)
+- minor updates
 
 ###2020.06.21
 - fixed regression error
@@ -79,38 +89,43 @@
 ###2015.02.07
 - initial release for unRAID v6
 </CHANGES>
-  <!--
-Copyright 2020, Bergware International
+
+<!--
+Copyright 2023, Bergware International
 Dynamix System Autofan - Fan speed control. Makes use of autofan script contributed by Aiden, Dan Stroot, Guzzi, gfjardim
 -->
-  <!-- PRE-INSTALL SCRIPT -->
-  <FILE Run="/bin/bash">
-    <INLINE>
+
+<!-- PRE-INSTALL SCRIPT -->
+<FILE Run="/bin/bash">
+<INLINE>
 # Stop service
-/usr/local/emhttp/plugins/&name;/scripts/rc.autofan stop 2&gt;/dev/null
+/usr/local/emhttp/plugins/&name;/scripts/rc.autofan stop 2>/dev/null
 
 # Remove old 'source' packages
-MD5=$(md5sum &source;.txz 2&gt;/dev/null|grep -Po '^\S+')
+MD5=$(md5sum &source;.txz 2>/dev/null|grep -Po '^\S+')
 if [[ $MD5 != &MD5; ]]; then
   rm -f &source;*.txz
 fi
 </INLINE>
-  </FILE>
-  <!-- SOURCE PACKAGE -->
-  <FILE Name="&source;.txz" Run="upgradepkg --install-new --reinstall">
-    <URL>https://raw.githubusercontent.com/BasVanBoven/unraid-templates/master/plugins/&name;.txz</URL>
-    <!--<MD5>&MD5;</MD5>-->
-  </FILE>
-  <!-- WORKAROUND -->
-  <FILE Name="/tmp/start_service" Mode="0770">
-    <INLINE>
+</FILE>
+
+<!-- SOURCE PACKAGE -->
+<FILE Name="&source;.txz" Run="upgradepkg --install-new --reinstall">
+<URL>https://raw.githubusercontent.com/BasVanBoven/unraid-templates/master/plugins/&name;.txz</URL>
+<MD5>&MD5;</MD5>
+</FILE>
+
+<!-- WORKAROUND -->
+<FILE Name="/tmp/start_service" Mode="0770">
+<INLINE>
 #!/bin/bash
-/usr/local/emhttp/plugins/&name;/scripts/rc.autofan start 2&gt;/dev/null
+/usr/local/emhttp/plugins/&name;/scripts/rc.autofan start 2>/dev/null
 </INLINE>
-  </FILE>
-  <!-- POST-INSTALL SCRIPT -->
-  <FILE Run="/bin/bash">
-    <INLINE>
+</FILE>
+
+<!-- POST-INSTALL SCRIPT -->
+<FILE Run="/bin/bash">
+<INLINE>
 cfg=&source;.cfg
 if [[ ! -e $cfg ]]; then
   cfg=/usr/local/emhttp/plugins/&name;/default.cfg
@@ -119,7 +134,7 @@ fi
 # Start service
 enable=$(grep -Po '^service="\K[^"]+' $cfg)
 if [[ $enable -eq 1 ]]; then
-  at -M -f /tmp/start_service now 2&gt;/dev/null
+  at -M -f /tmp/start_service now 2>/dev/null
 fi
 rm -f /tmp/start_service
 
@@ -127,17 +142,18 @@ echo ""
 echo "-----------------------------------------------------------"
 echo " Plugin &name; is installed."
 echo " This plugin requires Dynamix webGui to operate"
-echo " Copyright 2020, Bergware International"
+echo " Copyright 2023, Bergware International"
 echo " Version: &version;"
 echo "-----------------------------------------------------------"
 echo ""
 </INLINE>
-  </FILE>
-  <!-- REMOVE SCRIPT -->
-  <FILE Run="/bin/bash" Method="remove">
-    <INLINE>
+</FILE>
+
+<!-- REMOVE SCRIPT -->
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
 # Stop service
-/usr/local/emhttp/plugins/&name;/scripts/rc.autofan stop 2&gt;/dev/null
+/usr/local/emhttp/plugins/&name;/scripts/rc.autofan stop 2>/dev/null
 
 # Remove plugin related files
 rm -rf /boot/config/plugins/&name;
@@ -145,5 +161,6 @@ rm -rf /boot/config/plugins/&name;
 # Uninstall the 'source' package
 removepkg &name;
 </INLINE>
-  </FILE>
+</FILE>
+
 </PLUGIN>
